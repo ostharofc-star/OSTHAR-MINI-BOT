@@ -1,0 +1,963 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1"
+>
+
+<title>
+  OSTHAR MINI BOT Dashboard
+</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+
+  font-family:
+    Inter,
+    Arial,
+    sans-serif;
+
+  background: #f5f7fb;
+
+  color: #111827;
+}
+
+header {
+  background: white;
+
+  border-bottom:
+    1px solid #e5e7eb;
+
+  padding:
+    18px 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  font-weight: 900;
+  font-size: 20px;
+}
+
+.logout {
+  border: 0;
+
+  background: #111827;
+  color: white;
+
+  padding:
+    10px 16px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+}
+
+main {
+  width: min(
+    1100px,
+    calc(100% - 32px)
+  );
+
+  margin:
+    34px auto;
+}
+
+.hero {
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #7c3aed
+    );
+
+  color: white;
+
+  padding: 30px;
+
+  border-radius: 24px;
+
+  margin-bottom: 25px;
+
+  box-shadow:
+    0 20px 45px
+    rgba(
+      37,
+      99,
+      235,
+      .18
+    );
+}
+
+.hero h1 {
+  margin:
+    0 0 8px;
+}
+
+.hero p {
+  margin: 0;
+  opacity: .85;
+}
+
+.grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 20px;
+}
+
+.card {
+  background: white;
+
+  border:
+    1px solid #e5e7eb;
+
+  border-radius: 20px;
+
+  padding: 24px;
+
+  box-shadow:
+    0 12px 35px
+    rgba(
+      15,
+      23,
+      42,
+      .05
+    );
+}
+
+.card h2 {
+  margin:
+    0 0 20px;
+
+  font-size: 18px;
+}
+
+.field {
+  margin-bottom: 17px;
+}
+
+label {
+  display: block;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  margin-bottom: 8px;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+
+  border:
+    1px solid #dbe3ef;
+
+  border-radius: 12px;
+
+  padding:
+    12px 13px;
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      37,
+      99,
+      235,
+      .08
+    );
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.toggle {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding:
+    12px 0;
+
+  border-bottom:
+    1px solid #f0f2f5;
+}
+
+.toggle:last-child {
+  border-bottom: 0;
+}
+
+.toggle input {
+  width: 20px;
+  height: 20px;
+}
+
+.status-react-box {
+  margin-top: 16px;
+
+  padding: 16px;
+
+  border-radius: 14px;
+
+  background: #f8fafc;
+
+  border:
+    1px solid #e5e7eb;
+}
+
+.status-react-box .hint {
+  margin-top: 8px;
+
+  color: #6b7280;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+.emoji-preview {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  margin-top: 10px;
+
+  border-radius: 12px;
+
+  background: white;
+
+  border:
+    1px solid #e5e7eb;
+
+  font-size: 24px;
+}
+
+.save {
+  width: 100%;
+
+  margin-top: 22px;
+
+  border: 0;
+
+  border-radius: 14px;
+
+  padding: 15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #7c3aed
+    );
+
+  color: white;
+
+  font-weight: 800;
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+.save:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+#status {
+  margin-top: 15px;
+  text-align: center;
+
+  min-height: 20px;
+}
+
+@media (
+  max-width: 760px
+) {
+  .grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  header {
+    padding:
+      15px 18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    OSTHAR MINI BOT
+  </div>
+
+  <button
+    class="logout"
+    onclick="logout()"
+  >
+    Logout
+  </button>
+</header>
+
+<main>
+
+  <section class="hero">
+    <h1>
+      Bot Dashboard
+    </h1>
+
+    <p id="phoneText">
+      Loading account...
+    </p>
+  </section>
+
+  <div class="grid">
+
+    <section class="card">
+      <h2>
+        Bot Settings
+      </h2>
+
+      <div class="field">
+        <label>
+          Bot Name
+        </label>
+
+        <input
+          id="botName"
+          maxlength="50"
+        >
+      </div>
+
+      <div class="field">
+        <label>
+          Command Prefix
+        </label>
+
+        <input
+          id="prefix"
+          maxlength="3"
+        >
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>
+        Automation
+      </h2>
+
+      <div class="toggle">
+        <span>
+          Anti Delete
+        </span>
+
+        <input
+          id="antiDelete"
+          type="checkbox"
+        >
+      </div>
+
+      <div class="toggle">
+        <span>
+          Anti Call
+        </span>
+
+        <input
+          id="antiCall"
+          type="checkbox"
+        >
+      </div>
+
+      <div class="toggle">
+        <span>
+          Auto Status Seen
+        </span>
+
+        <input
+          id="autoStatusSeen"
+          type="checkbox"
+        >
+      </div>
+
+      <div class="toggle">
+        <span>
+          Status Auto React
+        </span>
+
+        <input
+          id="statusReact"
+          type="checkbox"
+        >
+      </div>
+
+      <div class="status-react-box">
+        <label>
+          Status Reaction Emoji
+        </label>
+
+        <input
+          id="statusReactEmoji"
+          maxlength="12"
+          placeholder="💚"
+          value="💚"
+          oninput="updateEmojiPreview()"
+        >
+
+        <div
+          id="emojiPreview"
+          class="emoji-preview"
+        >
+          💚
+        </div>
+
+        <div class="hint">
+          Example: ❤️ 🔥 😍 💚 👍
+        </div>
+      </div>
+
+      <div class="toggle">
+        <span>
+          Auto React
+        </span>
+
+        <input
+          id="autoReact"
+          type="checkbox"
+        >
+      </div>
+
+      <div class="toggle">
+        <span>
+          Auto Reply
+        </span>
+
+        <input
+          id="autoReply"
+          type="checkbox"
+        >
+      </div>
+
+      <div class="toggle">
+        <span>
+          Auto Read
+        </span>
+
+        <input
+          id="autoRead"
+          type="checkbox"
+        >
+      </div>
+
+      <div class="toggle">
+        <span>
+          Auto Typing
+        </span>
+
+        <input
+          id="autoTyping"
+          type="checkbox"
+        >
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>
+        Group Protection
+      </h2>
+
+      <div class="toggle">
+        <span>
+          Anti Link
+        </span>
+
+        <input
+          id="antiLink"
+          type="checkbox"
+        >
+      </div>
+
+      <div class="toggle">
+        <span>
+          Anti Spam
+        </span>
+
+        <input
+          id="antiSpam"
+          type="checkbox"
+        >
+      </div>
+
+      <div class="toggle">
+        <span>
+          Welcome
+        </span>
+
+        <input
+          id="welcome"
+          type="checkbox"
+        >
+      </div>
+
+      <div class="toggle">
+        <span>
+          Goodbye
+        </span>
+
+        <input
+          id="goodbye"
+          type="checkbox"
+        >
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>
+        Messages
+      </h2>
+
+      <div class="field">
+        <label>
+          Welcome Message
+        </label>
+
+        <textarea
+          id="welcomeMessage"
+        ></textarea>
+      </div>
+
+      <div class="field">
+        <label>
+          Goodbye Message
+        </label>
+
+        <textarea
+          id="goodbyeMessage"
+        ></textarea>
+      </div>
+
+      <div class="field">
+        <label>
+          Auto Reply Message
+        </label>
+
+        <textarea
+          id="autoReplyMessage"
+        ></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>
+        Media Destinations
+      </h2>
+
+      <div class="field">
+        <label>
+          Anti Delete Destination
+        </label>
+
+        <select
+          id="antiDeleteDestination"
+        >
+          <option value="owner">
+            Owner
+          </option>
+
+          <option value="same">
+            Same Chat
+          </option>
+
+          <option value="custom">
+            Custom Number
+          </option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>
+          View Once Destination
+        </label>
+
+        <select
+          id="viewOnceDestination"
+        >
+          <option value="owner">
+            Owner
+          </option>
+
+          <option value="same">
+            Same Chat
+          </option>
+
+          <option value="custom">
+            Custom Number
+          </option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>
+          Custom Destination Number
+        </label>
+
+        <input
+          id="customDestinationNumber"
+          placeholder="94771234567"
+        >
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>
+        Status
+      </h2>
+
+      <div class="toggle">
+        <span>
+          Status Reply
+        </span>
+
+        <input
+          id="statusReply"
+          type="checkbox"
+        >
+      </div>
+
+      <button
+        id="saveButton"
+        class="save"
+        onclick="saveSettings()"
+      >
+        Save Settings
+      </button>
+
+      <div id="status"></div>
+    </section>
+
+  </div>
+
+</main>
+
+<script>
+const fields = [
+  "botName",
+  "prefix",
+
+  "antiDelete",
+  "antiCall",
+  "autoStatusSeen",
+
+  "statusReact",
+  "statusReactEmoji",
+
+  "autoReact",
+  "autoReply",
+  "autoRead",
+  "autoTyping",
+
+  "antiLink",
+  "antiSpam",
+  "welcome",
+  "goodbye",
+
+  "statusReply",
+
+  "welcomeMessage",
+  "goodbyeMessage",
+  "autoReplyMessage",
+
+  "antiDeleteDestination",
+  "viewOnceDestination",
+  "customDestinationNumber"
+];
+
+// ======================================================
+// EMOJI PREVIEW
+// ======================================================
+
+function updateEmojiPreview() {
+  const input =
+    document.getElementById(
+      "statusReactEmoji"
+    );
+
+  const preview =
+    document.getElementById(
+      "emojiPreview"
+    );
+
+  const emoji =
+    String(
+      input.value || ""
+    ).trim();
+
+  preview.textContent =
+    emoji || "💚";
+}
+
+// ======================================================
+// LOAD SETTINGS
+// ======================================================
+
+async function loadSettings() {
+  try {
+    const response =
+      await fetch(
+        "/api/web/settings"
+      );
+
+    if (
+      response.status === 401
+    ) {
+      window.location.href =
+        "/login";
+
+      return;
+    }
+
+    const data =
+      await response.json();
+
+    if (!data.success) {
+      throw new Error(
+        data.error ||
+        "Unable to load settings."
+      );
+    }
+
+    document
+      .getElementById(
+        "phoneText"
+      )
+      .textContent =
+        `Connected account: +${data.phone}`;
+
+    for (
+      const name of fields
+    ) {
+      const element =
+        document
+          .getElementById(
+            name
+          );
+
+      if (!element) {
+        continue;
+      }
+
+      const value =
+        data.settings?.[name];
+
+      if (
+        element.type ===
+        "checkbox"
+      ) {
+        element.checked =
+          Boolean(value);
+
+      } else {
+
+        if (
+          name ===
+          "statusReactEmoji"
+        ) {
+          element.value =
+            value || "💚";
+
+        } else {
+          element.value =
+            value ?? "";
+        }
+      }
+    }
+
+    updateEmojiPreview();
+
+  } catch (error) {
+    const status =
+      document
+        .getElementById(
+          "status"
+        );
+
+    status.style.color =
+      "#dc2626";
+
+    status.textContent =
+      error.message;
+  }
+}
+
+// ======================================================
+// SAVE SETTINGS
+// ======================================================
+
+async function saveSettings() {
+  const status =
+    document
+      .getElementById(
+        "status"
+      );
+
+  const button =
+    document
+      .getElementById(
+        "saveButton"
+      );
+
+  status.style.color =
+    "#6b7280";
+
+  status.textContent =
+    "Saving...";
+
+  button.disabled =
+    true;
+
+  const payload = {};
+
+  for (
+    const name of fields
+  ) {
+    const element =
+      document
+        .getElementById(
+          name
+        );
+
+    if (!element) {
+      continue;
+    }
+
+    payload[name] =
+      element.type ===
+      "checkbox"
+        ? element.checked
+        : element.value;
+  }
+
+  if (
+    !String(
+      payload.statusReactEmoji ||
+      ""
+    ).trim()
+  ) {
+    payload.statusReactEmoji =
+      "💚";
+  }
+
+  try {
+    const response =
+      await fetch(
+        "/api/web/settings",
+        {
+          method:
+            "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify(
+              payload
+            )
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        "Unable to save settings."
+      );
+    }
+
+    status.style.color =
+      "#16a34a";
+
+    status.textContent =
+      "Settings saved successfully.";
+
+    updateEmojiPreview();
+
+  } catch (error) {
+    status.style.color =
+      "#dc2626";
+
+    status.textContent =
+      error.message;
+
+  } finally {
+    button.disabled =
+      false;
+  }
+}
+
+// ======================================================
+// LOGOUT
+// ======================================================
+
+async function logout() {
+  try {
+    await fetch(
+      "/api/web/logout",
+      {
+        method:
+          "POST"
+      }
+    );
+
+  } catch {}
+
+  window.location.href =
+    "/login";
+}
+
+loadSettings();
+</script>
+
+</body>
+</html>

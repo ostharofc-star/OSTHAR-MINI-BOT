@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>
+    OSTHAR MINI BOT
+  </title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+      background:
+        radial-gradient(
+          circle at top left,
+          #eef2ff,
+          transparent 45%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          #f3e8ff,
+          transparent 45%
+        ),
+        #f8fafc;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 24px;
+
+      color: #111827;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 430px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          .88
+        );
+
+      backdrop-filter:
+        blur(18px);
+
+      border:
+        1px solid
+        rgba(
+          255,
+          255,
+          255,
+          .8
+        );
+
+      border-radius: 28px;
+
+      padding: 34px;
+
+      box-shadow:
+        0 30px 80px
+        rgba(
+          37,
+          99,
+          235,
+          .13
+        );
+    }
+
+    .logo {
+      width: 62px;
+      height: 62px;
+
+      border-radius: 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 22px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #2563eb,
+          #7c3aed
+        );
+
+      color: white;
+
+      font-size: 26px;
+      font-weight: 800;
+
+      box-shadow:
+        0 14px 35px
+        rgba(
+          37,
+          99,
+          235,
+          .3
+        );
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 29px;
+    }
+
+    .subtitle {
+      margin: 0 0 30px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+
+      border:
+        1px solid
+        #dbe3ef;
+
+      border-radius: 14px;
+
+      padding:
+        14px 15px;
+
+      font-size: 16px;
+
+      outline: none;
+
+      background: white;
+
+      margin-bottom: 18px;
+
+      transition: .2s;
+    }
+
+    input:focus {
+      border-color:
+        #2563eb;
+
+      box-shadow:
+        0 0 0 4px
+        rgba(
+          37,
+          99,
+          235,
+          .1
+        );
+    }
+
+    button {
+      border: none;
+      width: 100%;
+
+      padding: 15px;
+
+      border-radius: 14px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #2563eb,
+          #7c3aed
+        );
+
+      color: white;
+
+      font-size: 16px;
+      font-weight: 800;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 12px 30px
+        rgba(
+          37,
+          99,
+          235,
+          .25
+        );
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    #message {
+      min-height: 22px;
+      margin-top: 18px;
+
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .note {
+      margin-top: 26px;
+
+      padding-top: 20px;
+
+      border-top:
+        1px solid
+        #eef2f7;
+
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <div class="logo">
+      O
+    </div>
+
+    <h1>
+      OSTHAR MINI BOT
+    </h1>
+
+    <p class="subtitle">
+      Sign in to manage your WhatsApp bot settings.
+    </p>
+
+    <form id="loginForm">
+
+      <label>
+        WhatsApp Number
+      </label>
+
+      <input
+        id="phone"
+        type="tel"
+        placeholder="94771234567"
+        autocomplete="tel"
+        required
+      >
+
+      <label>
+        5-Digit Web PIN
+      </label>
+
+      <input
+        id="pin"
+        type="password"
+        inputmode="numeric"
+        maxlength="5"
+        placeholder="•••••"
+        required
+      >
+
+      <button
+        id="loginButton"
+        type="submit"
+      >
+        Sign In
+      </button>
+
+      <div id="message"></div>
+
+    </form>
+
+    <div class="note">
+      Your Web PIN is sent to your linked WhatsApp account when the bot connects.
+    </div>
+
+  </div>
+
+<script>
+const form =
+  document.getElementById(
+    "loginForm"
+  );
+
+const phone =
+  document.getElementById(
+    "phone"
+  );
+
+const pin =
+  document.getElementById(
+    "pin"
+  );
+
+const button =
+  document.getElementById(
+    "loginButton"
+  );
+
+const message =
+  document.getElementById(
+    "message"
+  );
+
+form.addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
+
+    button.disabled = true;
+
+    button.textContent =
+      "Signing in...";
+
+    message.textContent = "";
+
+    try {
+      const response =
+        await fetch(
+          "/api/web/login",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body:
+              JSON.stringify({
+                phone:
+                  phone.value,
+
+                pin:
+                  pin.value
+              })
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error ||
+          "Login failed."
+        );
+      }
+
+      message.style.color =
+        "#16a34a";
+
+      message.textContent =
+        "Login successful.";
+
+      window.location.href =
+        "/dashboard";
+
+    } catch (error) {
+      message.style.color =
+        "#dc2626";
+
+      message.textContent =
+        error.message;
+
+    } finally {
+      button.disabled = false;
+
+      button.textContent =
+        "Sign In";
+    }
+  }
+);
+</script>
+
+</body>
+</html>
